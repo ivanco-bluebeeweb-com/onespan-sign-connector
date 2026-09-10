@@ -3,7 +3,7 @@ from __future__ import annotations
 import httpx
 from typing import Any, Optional
 
-DEFAULT_BASE = "https://sandbox.onespan.com/api"
+DEFAULT_BASE = "https://sandbox.esignlive.com/api"
 
 class OnespanSignClient:
     def __init__(self, api_key: str, base_url: str = ""):
@@ -19,7 +19,7 @@ class OnespanSignClient:
     async def verify_auth(self) -> dict[str, Any]:
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
-                resp = await client.get(f"{self.base_url}/agreements", headers=self.headers)
+                resp = await client.get(f"{self.base_url}/packages?from=1&to=1", headers=self.headers)
                 if resp.status_code in (200, 201, 204):
                     return {"status": "ok", "data": resp.json() if resp.content else {}}
                 if resp.status_code in (401, 403):
@@ -33,7 +33,7 @@ class OnespanSignClient:
             params = {}
             if status:
                 params["status"] = status
-            resp = await client.get(f"{self.base_url}/agreements", headers=self.headers, params=params)
+            resp = await client.get(f"{self.base_url}/packages", headers=self.headers, params=params)
             if resp.status_code == 200:
                 data = resp.json()
                 if isinstance(data, list):
@@ -47,7 +47,7 @@ class OnespanSignClient:
 
     async def get_agreement(self, agreement_id: str) -> dict[str, Any]:
         async with httpx.AsyncClient(timeout=self.timeout) as client:
-            resp = await client.get(f"{self.base_url}/agreements/{agreement_id}", headers=self.headers)
+            resp = await client.get(f"{self.base_url}/packages/{agreement_id}", headers=self.headers)
             if resp.status_code == 200:
                 return resp.json()
             return {"id": agreement_id, "error": f"HTTP {resp.status_code}"}
@@ -67,5 +67,5 @@ class OnespanSignClient:
 
     async def cancel_signature_request(self, agreement_id: str, reason: str = "") -> dict[str, Any]:
         async with httpx.AsyncClient(timeout=self.timeout) as client:
-            resp = await client.delete(f"{self.base_url}/agreements/{agreement_id}", headers=self.headers)
+            resp = await client.delete(f"{self.base_url}/packages/{agreement_id}", headers=self.headers)
             return {"id": agreement_id, "status": "canceled", "reason": reason}

@@ -9,7 +9,7 @@ class NoParams(BaseModel):
 class ConnectParams(BaseModel):
     label: str = Field(default="", description="Friendly connection label, e.g. Primary OneSpan Sign.")
     api_key: str = Field(description="OneSpan Sign API Key or Bearer Token.")
-    base_url: str = Field(default="https://sandbox.onespan.com/api", description="OneSpan Sign API base URL.")
+    base_url: str = Field(default="https://sandbox.esignlive.com/api", description="OneSpan Sign API base URL.")
 
 class ConnectionIdParams(BaseModel):
     connection_id: str = Field(default="", description="Connection identifier (empty uses active connection).")
